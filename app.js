@@ -1,4 +1,11 @@
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+// VIBES NATION - Supabase configuration
+const SUPABASE_URL = "https://ckfkyjsscflwrombeiek.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_72nrkb_jq9U0nMBWKtAHSg_7MEAOCS5";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+); const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const seedPosts=[
 {id:1,name:"Zainab A.",handle:"@zainabcreates",initials:"ZA",avatar:"grad1",time:"12 min ago",text:"A little reminder for today: you don’t have to have everything figured out. Keep showing up, keep learning, and let your journey unfold. ✨💜 #VibesOfTheDay",likes:128,comments:18,shares:7,art:"",following:true},
 {id:2,name:"Aminu Musa",handle:"@aminu_music",initials:"AM",avatar:"grad2",time:"38 min ago",text:"Northern sounds, fresh energy. Been working on something special for you all 🎧🔥 Who’s ready?",likes:86,comments:24,shares:11,art:"music",artText:"SOUND OF THE NORTH  ✦",following:true},
