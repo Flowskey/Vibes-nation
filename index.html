@@ -1,54 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0c0b12">
-<title>VIBES NATION — Connect to your vibe</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0c0b12">
+  <title>VIBES NATION — Connect to your vibe</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="app.js"></script>
 <body>
-<div class="app-shell">
-  <aside class="sidebar">
-    <a class="brand" href="#" aria-label="Vibes Nation home"><span class="brand-mark">V</span><span>VIBES <b>NATION</b><small>CONNECT TO YOUR VIBE</small></span></a>
-    <button class="nav-item active" data-page="feed"><span>⌂</span> Home Feed</button>
-    <button class="nav-item" data-page="stories"><span>◉</span> Stories <i class="dot"></i></button>
-    <button class="nav-item" data-page="messages"><span>✉</span> Messages <i class="count">3</i></button>
-    <button class="nav-item" data-page="notifications"><span>♧</span> Notifications <i class="count">4</i></button>
-    <button class="nav-item" data-page="profile"><span>◎</span> My Profile</button>
-    <div class="sidebar-bottom"><div class="mini-user"><div class="avatar me">MH</div><div><strong>Muhammed H.</strong><small>@hussain_vibes</small></div><span>•••</span></div><p>© 2026 Vibes Nation</p></div>
-  </aside>
-  <main class="main">
-    <header class="topbar"><div><span class="eyebrow">YOUR COMMUNITY, YOUR VIBE</span><h1 id="pageTitle">Home Feed</h1></div><div class="top-actions"><label class="search"><span>⌕</span><input id="searchInput" placeholder="Search Vibes Nation"></label><button class="icon-btn" data-page="notifications" aria-label="Notifications">♧<i class="notify-dot"></i></button><button class="post-btn auth-open" id="authOpen">Sign in</button><div class="avatar me" id="topAvatar">MH</div></div></header>
-    <section id="feedPage" class="page">
-      <div class="welcome-banner"><div><span class="pill">✦ THE VIBE IS YOURS</span><h2>Good evening, Hussain.</h2><p>Share your moment. Find your people.</p></div><div class="banner-orb">VN</div></div>
-      <section class="stories-strip"><div class="section-heading"><h3>Stories</h3><button class="text-btn" data-page="stories">See all →</button></div><div class="story-row" id="storyRow">
-        <button class="story add-story" id="addStory"><span class="story-ring"><span>＋</span></span><small>Your story</small></button>
-        <button class="story" data-story="Zainab"><span class="story-ring grad1"><span>ZA</span></span><small>Zainab</small></button>
-        <button class="story" data-story="Aminu"><span class="story-ring grad2"><span>AM</span></span><small>Aminu</small></button>
-        <button class="story" data-story="Maryam"><span class="story-ring grad3"><span>MY</span></span><small>Maryam</small></button>
-        <button class="story" data-story="Faisal"><span class="story-ring grad4"><span>FA</span></span><small>Faisal</small></button>
-        <button class="story" data-story="Hauwa"><span class="story-ring grad5"><span>HA</span></span><small>Hauwa</small></button>
-      </div></section>
-      <section class="composer card"><div class="avatar me">MH</div><button class="composer-input" id="openComposer">What’s on your mind, Hussain?</button><button class="post-btn" id="composerPost">＋ Create post</button></section>
-      <div class="feed-layout"><div class="posts-column"><div class="feed-tabs"><button class="feed-tab active" data-filter="all">For you</button><button class="feed-tab" data-filter="following">Following</button><button class="feed-tab" data-filter="popular">Popular</button></div><div id="posts"></div></div>
-      <aside class="right-rail"><section class="card trend-card"><div class="section-heading"><h3>Trending now</h3><span class="spark">✦</span></div><div class="trend"><small>TOPIC · COMMUNITY</small><b>#VibesOfTheDay</b><span>2.4k posts</span></div><div class="trend"><small>TOPIC · MUSIC</small><b>#NorthernSounds</b><span>1.8k posts</span></div><div class="trend"><small>TOPIC · CAMPUS</small><b>#StudentLife</b><span>956 posts</span></div><button class="text-btn">Explore trends →</button></section><section class="card suggested"><h3>People to follow</h3><div class="suggest-row"><div class="avatar grad1">ZA</div><div><b>Zainab A.</b><small>@zainabcreates</small></div><button class="follow-btn">Follow</button></div><div class="suggest-row"><div class="avatar grad2">AM</div><div><b>Aminu Musa</b><small>@aminu_music</small></div><button class="follow-btn">Follow</button></div><div class="suggest-row"><div class="avatar grad3">MY</div><div><b>Maryam Yusuf</b><small>@maryamwrites</small></div><button class="follow-btn">Follow</button></div></section></aside></div>
-    </section>
-    <section id="messagesPage" class="page hidden"><div class="messages-layout card"><div class="chat-list"><div class="section-heading"><h3>Messages</h3><button class="icon-btn" id="newChat">＋</button></div><label class="search full"><span>⌕</span><input id="chatSearch" placeholder="Search chats"></label><div id="chatContacts"></div></div><div class="chat-window"><div class="chat-head"><div class="avatar grad1" id="activeChatAvatar">ZA</div><div><b id="activeChatName">Zainab A.</b><small><span class="online"></span> Active now</small></div><button class="icon-btn chat-more">•••</button></div><div class="chat-messages" id="chatMessages"></div><form class="chat-compose" id="chatForm"><button type="button" class="icon-btn" id="attachBtn">＋</button><input id="chatInput" placeholder="Write a message..." autocomplete="off" required><button class="send-btn" aria-label="Send message">➤</button></form></div></div></section>
-    <section id="storiesPage" class="page hidden"><div class="section-heading"><div><h2>Stories</h2><p class="muted">Little moments, shared with your people.</p></div><button class="post-btn" id="storyCreate">＋ Add story</button></div><div class="story-grid" id="storyGrid"></div></section>
-    <section id="notificationsPage" class="page hidden"><div class="section-heading"><div><h2>Notifications</h2><p class="muted">You’re all caught up with your community.</p></div><button class="text-btn" id="markRead">Mark all as read</button></div><div class="card notification-list" id="notificationList"></div></section>
-    <section id="profilePage" class="page hidden"><div class="profile-cover"><div class="avatar me big">MH</div></div><div class="profile-content"><button class="post-btn edit-profile" id="editProfile">Edit profile</button><h2>Muhammed Hussain <span class="verified">✓</span></h2><p class="muted">@hussain_vibes</p><p>Sharing good energy, creativity, music and everyday moments. ✨</p><div class="profile-stats"><div><b id="postCount">3</b><span>Posts</span></div><div><b>428</b><span>Followers</span></div><div><b>216</b><span>Following</span></div></div><h3>Your posts</h3><div id="profilePosts"></div></div></section>
-  </main>
-</div>
-<div class="modal-backdrop hidden" id="postModal"><div class="modal"><button class="modal-close" data-close>×</button><h2>Create a post</h2><p class="muted">Let the nation feel your vibe.</p><form id="postForm"><textarea id="postText" placeholder="What would you like to share?" required maxlength="500"></textarea><div class="modal-footer"><span class="muted">✦ Share something positive</span><button class="post-btn">Publish post</button></div></form></div></div>
-<div class="modal-backdrop hidden" id="storyModal"><div class="modal"><button class="modal-close" data-close>×</button><h2>Add to your story</h2><p class="muted">A quick update for your community.</p><form id="storyForm"><input id="storyText" placeholder="Add a caption..." maxlength="140" required><div class="modal-footer"><span class="muted">Visible for 24 hours (demo)</span><button class="post-btn">Share story</button></div></form></div></div>
-<div class="modal-backdrop hidden" id="authModal"><div class="modal auth-modal"><button class="modal-close" data-close>×</button><span class="pill">VIBES NATION ACCOUNT</span><h2 id="authTitle">Welcome back</h2><p class="muted" id="authHint">Sign in to sync your profile and posts.</p><form id="authForm"><label class="field-label">Email address</label><input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" required><label class="field-label">Password</label><input id="authPassword" type="password" placeholder="At least 6 characters" autocomplete="current-password" minlength="6" required><label class="field-label hidden" id="authNameLabel">Display name</label><input id="authName" class="hidden" type="text" placeholder="Your display name" autocomplete="name"><button class="post-btn auth-submit" id="authSubmit">Sign in</button></form><p class="auth-switch"><span id="authSwitchText">New to Vibes Nation?</span> <button class="text-btn" id="authSwitch" type="button">Create account</button></p><p class="muted auth-note">If Supabase has not been configured yet, the app will remain in demo mode.</p></div></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="app.js"></script>
+  <div id="app-root">
+    <p style="padding:24px;color:#fff;background:#0c0b12">
+      Loading VIBES NATION...
+    </p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
+
