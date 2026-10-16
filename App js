@@ -1,0 +1,68 @@
+// FORCE EXIT DEMO MODE - FINAL FIX - CLEAN VERSION
+localStorage.removeItem('demoMode');
+window.DEMO_MODE = false;
+
+const SUPABASE_URL = "https://snmvnbpbmagvcreqhyyj.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNubXZuYnBibWFndmNyZXFoeXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjE3NjEsImV4cCI6MjEwNzYzNzc2MX0.qlrg7DZBuySqgQTrpRQJ2cetkNO1eFzM00_vrnPRQlA";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = supabaseClient;
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const seedPosts=[
+{id:1,name:"Zainab A.",handle:"@zainabcreates",initials:"ZA",avatar:"grad1",time:"12 min ago",text:"A little reminder for today: you don’t have to have everything figured out. Keep showing up, keep learning, and let your journey unfold. ✨💜 #VibesOfTheDay",likes:128,comments:18,shares:7,art:"",following:true},
+{id:2,name:"Aminu Musa",handle:"@aminu_music",initials:"AM",avatar:"grad2",time:"38 min ago",text:"Northern sounds, fresh energy. Been working on something special for you all 🎧🔥 Who’s ready?",likes:86,comments:24,shares:11,art:"music",artText:"SOUND OF THE NORTH ✦",following:true},
+{id:3,name:"Maryam Yusuf",handle:"@maryamwrites",initials:"MY",avatar:"grad3",time:"1 hr ago",text:"Campus days are a mix of deadlines, good friends, and tiny wins that deserve to be celebrated. To everyone studying tonight — you’ve got this! 📚🤍 #StudentLife",likes:64,comments:12,shares:4,art:"campus",artText:"ONE DAY AT A TIME",following:false}
+];
+let posts=[...seedPosts], nextPost=4, activeFilter="all", activeChat="Zainab A.", unread=4;
+let chats=[
+{name:"Zainab A.",initials:"ZA",avatar:"grad1",time:"2m",preview:"That sounds great! 💜",messages:[{text:"Hey Hussain! How’s your day going?",mine:false,time:"8:42 PM"},{text:"Pretty good, thanks! Just checking out Vibes Nation.",mine:true,time:"8:43 PM"},{text:"That sounds great! 💜",mine:false,time:"8:44 PM"}]},
+{name:"Aminu Musa",initials:"AM",avatar:"grad2",time:"15m",preview:"Send me the track when ready",messages:[{text:"I’m working on a new track this week.",mine:false,time:"8:12 PM"},{text:"Nice! Send me the track when ready 🎧",mine:true,time:"8:14 PM"}]},
+{name:"Maryam Yusuf",initials:"MY",avatar:"grad3",time:"1h",preview:"Thank you for the support!",messages:[{text:"Loved your latest post.",mine:true,time:"7:15 PM"},{text:"Thank you for the support! 🤍",mine:false,time:"7:18 PM"}]},
+{name:"Faisal Bello",initials:"FA",avatar:"grad4",time:"Yesterday",preview:"See you on campus",messages:[{text:"See you on campus tomorrow.",mine:false,time:"Yesterday"}]}
+];
+let stories=[{name:"Zainab",initials:"ZA",avatar:"grad1",text:"Little moments, big memories ✨"},{name:"Aminu",initials:"AM",avatar:"grad2",text:"Studio session 🎧"},{name:"Maryam",initials:"MY",avatar:"grad3",text:"A calm evening 🤍"},{name:"Faisal",initials:"FA",avatar:"grad4",text:"Good energy only!"},{name:"Hauwa",initials:"HA",avatar:"grad5",text:"Grateful for today 🌸"}];
+let notifications=[
+{initials:"ZA",avatar:"grad1",text:"<b>Zainab A.</b> liked your post.",time:"2 minutes ago",unread:true},
+{initials:"AM",avatar:"grad2",text:"<b>Aminu Musa</b> started following you.",time:"18 minutes ago",unread:true},
+{initials:"MY",avatar:"grad3",text:"<b>Maryam Yusuf</b> commented: “This is so true! 🤍”",time:"42 minutes ago",unread:true},
+{initials:"FA",avatar:"grad4",text:"<b>Faisal Bello</b> mentioned you in a post.",time:"1 hour ago",unread:true},
+{initials:"VN",avatar:"me",text:"Welcome to <b>Vibes Nation</b> — your community starts here.",time:"Yesterday",unread:false}
+];
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove("show"),2400)}
+function nav(page){$$(".page").forEach(p=>p.classList.add("hidden"));$("#"+page+"Page").classList.remove("hidden");$$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.page===page));$("#pageTitle").textContent=({feed:"Home Feed",messages:"Messages",stories:"Stories",notifications:"Notifications",profile:"My Profile"})[page]||"Home Feed";if(page==="messages")renderChats();if(page==="stories")renderStories();if(page==="notifications")renderNotifications();if(page==="profile")renderProfile();window.scrollTo({top:0,behavior:"smooth"})}
+function postHTML(p){return `<article class="post-card card" data-post="${p.id}"><div class="post-head"><div class="avatar ${p.avatar}">${p.initials}</div><div class="post-user"><b>${p.name}</b><small>${p.handle} · ${p.time}</small></div><button class="more-btn" data-more="${p.id}" aria-label="Post options">•••</button></div><p class="post-copy">${escapeHTML(p.text)}</p>${p.art?`<div class="post-art ${p.art}">${p.artText}</div>`:""}<div class="post-meta"><span>💜 <span class="like-count">${p.likes}</span> likes</span><span>${p.comments} comments · ${p.shares} shares</span></div><div class="post-actions"><button class="action-btn ${p.liked?"liked":""}" data-like="${p.id}">${p.liked?"♥":"♡"} Like</button><button class="action-btn" data-comment="${p.id}">▢ Comment</button><button class="action-btn" data-share="${p.id}">↗ Share</button></div></article>`}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderPosts(){let list=posts.filter(p=>activeFilter!=="following"||p.following);if(activeFilter==="popular")list=[...list].sort((a,b)=>b.likes-a.likes);const q=$("#searchInput").value.toLowerCase().trim();if(q)list=list.filter(p=>(p.name+" "+p.text+" "+p.handle).toLowerCase().includes(q));$("#posts").innerHTML=list.length?list.map(postHTML).join(""):'<div class="card post-card muted">No posts found. Try another search.</div>';$("#postCount").textContent=posts.filter(p=>p.name==="Muhammed Hussain").length+3}
+function renderProfile(){$("#profilePosts").innerHTML=posts.filter(p=>p.name==="Muhammed Hussain").map(postHTML).join("")||'<p class="muted">Your posts will appear here when you share something.</p>';$("#postCount").textContent=posts.filter(p=>p.name==="Muhammed Hussain").length}
+function renderChats(){const q=($("#chatSearch")?.value||"").toLowerCase();$("#chatContacts").innerHTML=chats.filter(c=>c.name.toLowerCase().includes(q)).map(c=>`<button class="contact ${c.name===activeChat?"active":""}" data-chat="${c.name}"><div class="avatar ${c.avatar}">${c.initials}</div><div class="contact-info"><b>${c.name}</b><small>${escapeHTML(c.preview)}</small></div><span class="contact-time">${c.time}</span></button>`).join("");const c=chats.find(c=>c.name===activeChat)||chats[0];activeChat=c.name;$("#activeChatName").textContent=c.name;$("#activeChatAvatar").textContent=c.initials;$("#activeChatAvatar").className="avatar "+c.avatar;$("#chatMessages").innerHTML=c.messages.map(m=>`<div class="message ${m.mine?"mine":""}">${escapeHTML(m.text)}<small>${m.time}</small></div>`).join("");$("#chatMessages").scrollTop=$("#chatMessages").scrollHeight}
+function renderStories(){$("#storyGrid").innerHTML=stories.map(s=>`<button class="story-tile" data-story="${s.name}"><div class="post-head"><div class="avatar ${s.avatar}">${s.initials}</div><div class="post-user">${s.name}<small>Recent story</small></div></div><div class="story-caption">${escapeHTML(s.text)}</div><small>Tap to view story →</small></button>`).join("")}
+function renderNotifications(){$("#notificationList").innerHTML=notifications.map((n,i)=>`<div class="notification ${n.unread?"unread":""}"><div class="avatar ${n.avatar}">${n.initials}</div><div class="notice-text">${n.text}<small>${n.time}</small></div><button class="text-btn" data-notice="${i}">${n.unread?"View":"✓"}</button></div>`).join("");const count=notifications.filter(n=>n.unread).length;$$('[data-page="notifications"].count').forEach(el=>el.textContent=count||"");}
+function openModal(id){$("#"+id).classList.remove("hidden");const field=$("#"+id).querySelector("textarea,input");if(field)setTimeout(()=>field.focus(),50)}
+function closeModal(el){el.classList.add("hidden")}
+function addPost(text){posts.unshift({id:nextPost++,name:"Muhammed Hussain",handle:"@hussain_vibes",initials:"MH",avatar:"me",time:"Just now",text,likes:0,comments:0,shares:0,following:true,liked:false});renderPosts();toast("Your post is live on Vibes Nation! ✨")}
+function addStory(text){stories.unshift({name:"You",initials:"MH",avatar:"me",text});renderStories();toast("Story shared with your community!")}
+document.addEventListener("click",e=>{
+const navBtn=e.target.closest("[data-page]");if(navBtn){nav(navBtn.dataset.page);return}
+const like=e.target.closest("[data-like]");if(like){const p=posts.find(p=>p.id===+like.dataset.like);p.liked=!p.liked;p.likes+=p.liked?1:-1;renderPosts();return}
+const comment=e.target.closest("[data-comment]");if(comment){const p=posts.find(p=>p.id===+comment.dataset.comment);const value=prompt("Write a comment:");if(value&&value.trim()){p.comments++;toast("Comment added.");renderPosts()}return}
+const share=e.target.closest("[data-share]");if(share){const p=posts.find(p=>p.id===+share.dataset.share);p.shares++;if(navigator.share)navigator.share({title:"Vibes Nation",text:p.text}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(p.text).catch(()=>{});toast("Post ready to share!");renderPosts();return}
+const chat=e.target.closest("[data-chat]");if(chat){activeChat=chat.dataset.chat;renderChats();return}
+const story=e.target.closest("[data-story]");if(story){const s=stories.find(x=>x.name===story.dataset.story);if(s)toast(s.name+": "+s.text);return}
+const more=e.target.closest("[data-more]");if(more){const choice=prompt("Post options: type 'copy' to copy the post text, or cancel.");if(choice&&choice.toLowerCase()==="copy"){const p=posts.find(p=>p.id===+more.dataset.more);navigator.clipboard?.writeText(p.text);toast("Post text copied.");}return}
+const notice=e.target.closest("[data-notice]");if(notice){notifications[+notice.dataset.notice].unread=false;renderNotifications();return}
+if(e.target.closest("[data-close]")){closeModal(e.target.closest(".modal-backdrop"));return}
+if(e.target.classList.contains("modal-backdrop"))closeModal(e.target);
+});
+$("#openComposer").onclick=()=>openModal("postModal");$("#composerPost").onclick=()=>openModal("postModal");$("#postForm").onsubmit=e=>{e.preventDefault();const t=$("#postText").value.trim();if(t){addPost(t);$("#postText").value="";closeModal($("#postModal"))}};
+$("#addStory").onclick=()=>openModal("storyModal");$("#storyCreate").onclick=()=>openModal("storyModal");$("#storyForm").onsubmit=e=>{e.preventDefault();const t=$("#storyText").value.trim();if(t){addStory(t);$("#storyText").value="";closeModal($("#storyModal"))}};
+$$(".feed-tab").forEach(b=>b.onclick=()=>{activeFilter=b.dataset.filter;$$(".feed-tab").forEach(x=>x.classList.toggle("active",x===b));renderPosts()});
+$("#searchInput").addEventListener("input",renderPosts);$("#chatSearch").addEventListener("input",renderChats);
+$("#chatForm").onsubmit=e=>{e.preventDefault();const text=$("#chatInput").value.trim();if(!text)return;const c=chats.find(c=>c.name===activeChat);c.messages.push({text,mine:true,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});c.preview=text;c.time="now";$("#chatInput").value="";renderChats()};
+$("#newChat").onclick=()=>{const name=prompt("Enter a contact name:");if(name&&name.trim()){let c=chats.find(c=>c.name.toLowerCase()===name.trim().toLowerCase());if(!c){const initials=name.trim().split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase();c={name:name.trim(),initials,avatar:"grad5",time:"now",preview:"Start a conversation",messages:[]};chats.unshift(c)}activeChat=c.name;renderChats();toast("Chat opened.")}};
+$("#attachBtn").onclick=()=>toast("Media attachments will be available in the full app.");
+$("#markRead").onclick=()=>{notifications.forEach(n=>n.unread=false);renderNotifications();toast("All notifications marked as read.")};
+$("#editProfile").onclick=()=>{const name=prompt("Display name:", "Muhammed Hussain");if(name&&name.trim()){document.querySelector(".profile-content h2").innerHTML=escapeHTML(name.trim())+' <span class="verified">✓</span>';toast("Profile display updated.")}};
+$$(".follow-btn").forEach(b=>b.onclick=()=>{const following=b.textContent==="Following";b.textContent=following?"Follow":"Following";b.style.background=following?"#9d6bff14":"#62d6a51a";b.style.color=following?"#c6a9ff":"#62d6a5";toast(following?"Unfollowed":"You’re now following this creator!")});
+$("#composerPost").setAttribute("type","button");
+renderPosts();renderChats();renderNotifications();
