@@ -1,3 +1,3 @@
-VITE_SUPABASE_URL=https://snmvnbpbmagvcreqxyyj.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNubXZuYnBibWFndmNyZXFoeXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjE3NjEsImV4cCI6MjEwNzYzNzc2MX0.qlrg7DZBuySqgQTrpRQJ2cetkNO1eFzM00_vrnPRQlA
-VITE_DEMO_MODE=false
+git add .
+git commit -m "Fix: exit demo mode and add Supabase config"
+git push
