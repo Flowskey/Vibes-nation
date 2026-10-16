@@ -1,18 +1,7 @@
 
-const cfg = window.VIBES_CONFIG || {};
 
-const configured = Boolean(
-  typeof cfg.supabaseUrl === "string" &&
-  cfg.supabaseUrl.startsWith("https://") &&
-  typeof cfg.supabaseAnonKey === "string" &&
-  cfg.supabaseAnonKey.trim().length > 0
-);
-
-if (!configured) {
-  console.error(
-    "VIBES NATION: Supabase configuration is missing or invalid."
-  );
-} else {
-  console.log("VIBES NATION: Supabase configuration detected.");
-}
+window.VIBES_CONFIG = {
+  supabaseUrl: "https://snmvnbpbmagvcreqhyyj.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNubXZuYnBibWFndmNyZXFoeXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjE3NjEsImV4cCI6MjEwNzYzNzc2MX0.qlrg7DZBuySqgQTrpRQJ2cetkNO1eFzM00_vrnPRQlA"
+};
 
