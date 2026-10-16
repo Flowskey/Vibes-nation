@@ -3,7 +3,7 @@ const SUPABASE_URL = "https://ckfkyjsscflwrombeiek.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_72nrkb_jq9U0nMBWKtAHSg_7MEAOCS5";
 
 const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
+  SUPABASE_URL, const SUPABASE_URL = "[HIDE]";
   SUPABASE_ANON_KEY
 ); const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const seedPosts=[
